@@ -88,7 +88,7 @@ _Avoid_: Search hijacking, embedding collision
 The activation and execution of adversarial instructions contained within retrieved passages once assembled into the model generation prompt.
 _Avoid_: Chunk activation, retrieval execution
 
-## Defensive Architecture
+## Defensive Architecture & Runtime Enforcement
 
 **Prompt-Level Isolation**:
 Heuristic formatting mechanisms (delimiters, XML tags, border strings, spotlighting) used within prompts to visually separate untrusted data from instructions.
@@ -105,6 +105,22 @@ _Avoid_: Two-tier LLM, sandbox model
 **Runtime Policy Enforcement**:
 Deterministic execution controls (Mandatory Access Control, capability tokens, schema validation, human approval gates) that govern tool calls independently of LLM reasoning.
 _Avoid_: Tool sandbox, runtime firewall
+
+**Policy Enforcement Module**:
+A deep module placed at the tool execution seam that validates behavioral specifications, capability tokens, and parameter invariants before invoking external tool adapters.
+_Avoid_: Tool gateway, permission service
+
+**Behavioral Invariant**:
+A declarative constraint governing tool execution preconditions, parameter bounds, and data-flow destinations (e.g. prohibiting outbound network calls when untrusted data is loaded).
+_Avoid_: Tool rule, safety check
+
+**Taint Propagation**:
+The tracking of untrusted Data Plane labels across tool outputs, intermediate reasoning scratchpads, and subsequent tool execution parameters.
+_Avoid_: Data tracking, flow tracing
+
+**Capability Token**:
+An ephemeral, scoped authorization token granting temporary permission to execute specific tool actions with validated parameter boundaries.
+_Avoid_: API key, auth credential
 
 ## Evaluation Metrics
 
