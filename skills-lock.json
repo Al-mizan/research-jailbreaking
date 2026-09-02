@@ -79,6 +79,12 @@
       "skillPath": "skills/engineering/research/SKILL.md",
       "computedHash": "c8c1cba327a6f824b554cd978079a3dadd7406d73174f8fb9bfef58824691970"
     },
+    "research-proposal": {
+      "source": "luwill/research-skills",
+      "sourceType": "github",
+      "skillPath": "research-proposal/SKILL.md",
+      "computedHash": "c3e8a24bb002258e748d3e7b704493196de0e8b17ca519c8a10680a7c19e6835"
+    },
     "resolving-merge-conflicts": {
       "source": "mattpocock/skills",
       "sourceType": "github",
