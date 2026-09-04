@@ -135,3 +135,80 @@ _Avoid_: Clean accuracy, task preservation
 **Defense Robustness Rate (DRR)**:
 The quantitative reduction in Attack Success Rate achieved by a defense against adaptive or secondary attack mutations.
 _Avoid_: Defense effectiveness, mitigation score
+
+**Contextual Injection**:
+An indirect prompt injection embedded naturally within plausible domain content to evade lexical and perplexity-based filters.
+_Avoid_: Stealth injection, natural injection
+
+**Obvious Injection**:
+A raw, uncamouflaged adversarial prompt injection used primarily as an upper-bound baseline in vulnerability evaluations.
+_Avoid_: Naive injection, direct payload
+
+## Agent Skill & Tool Supply Chain
+
+**Agent Skill**:
+A modular distribution package containing natural language instructions, tool configurations, and executable scripts that extends an agent's reasoning capabilities.
+_Avoid_: Plugin, tool package, agent extension
+
+**Skill Manifest**:
+A structured specification file (such as `SKILL.md`) defining an agent skill's identity, trigger descriptions, dependencies, and execution permissions.
+_Avoid_: Skill config, agent definition file
+
+**Tool Schema Poisoning**:
+An attack altering tool descriptions, parameter schemas, or function signatures in a registry to induce unauthorized execution or parameter manipulation.
+_Avoid_: Function definition poisoning, schema tampering
+
+**Two-Channel Injection**:
+An attack splitting adversarial instructions across separate communication channels—such as the user prompt and tool metadata—that assemble into an active exploit only upon execution.
+_Avoid_: Dual-payload attack, multi-vector injection
+
+**Front-Loaded Inducement**:
+The deliberate placement of coercive instructions at the beginning of a tool or skill description to preemptively bias agent selection heuristics.
+_Avoid_: Priority injection, early prompt stuffing
+
+## Attack Archetypes & Execution Camouflage
+
+**Document-Driven Implicit Payload Execution (DDIPE)**:
+An attack pattern where processing an untrusted document triggers an agent to load and execute a malicious skill or tool without explicit user authorization.
+_Avoid_: Passive skill hijack, document trigger exploit
+
+**Data Thief**:
+A stealthy malicious skill or tool payload designed to covertly harvest and exfiltrate environment variables, credentials, or private workspace data.
+_Avoid_: Exfiltration script, credential stealer
+
+**Agent Hijacker**:
+A persistent malicious skill that overrides system instructions, subverts core reasoning loops, and coerces the agent into serving as an adversarial proxy.
+_Avoid_: Persistent rootkit, agent botnet node
+
+**Platform Trust Weaponization**:
+The exploitation of implicit platform trust—such as verified author badges, marketplace popularity metrics, or default local permissions—to bypass execution guardrails.
+_Avoid_: Marketplace spoofing, reputation poisoning
+
+## Supply Chain Threat Lifecycle
+
+**Discovery Manipulation**:
+The manipulation of semantic search embeddings, skill tags, or registry descriptions to force malicious skills into top-k discovery results.
+_Avoid_: Search ranking hijack, registry poisoning
+
+**Selection Manipulation**:
+The deceptive crafting of skill descriptions or functional overlap to deceive an agent's planning module into selecting a malicious skill over a benign equivalent.
+_Avoid_: Skill collision, routing confusion
+
+**Governance Evasion**:
+Techniques—such as polymorphic payloads, dynamic imports, or steganographic instructions—used to bypass static analysis and marketplace security vetting.
+_Avoid_: Store bypass, vetting evasion
+
+## Cross-Lingual Alignment & Safety Disparities
+
+**English Calibration Gap**:
+The systematic performance disparity where safety alignment and guardrails perform significantly better on English prompts than on non-English or low-resource languages.
+_Avoid_: Language defense disparity, multilingual safety lag
+
+**Translation Quality Fallacy**:
+The flawed assumption that machine-translated or ungrammatical adversarial prompts fail to execute, despite LLMs retaining sufficient semantic comprehension to process the attack while guardrails fail.
+_Avoid_: Translation defense myth, syntax protection fallacy
+
+**Linguistic Proficiency Paradox**:
+The vulnerability dynamic where a model's multilingual task capability far outpaces the sensitivity and coverage of its safety guardrails in low-resource languages.
+_Avoid_: Capability-safety gap, cross-lingual asymmetry
+
