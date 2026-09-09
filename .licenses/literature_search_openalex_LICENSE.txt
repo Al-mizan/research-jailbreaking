@@ -1,0 +1,4 @@
+OpenAlex API License Notification
+Created at: 2026-09-05T20:15:10+06:00
+
+User notification: Check the terms at https://developers.openalex.org/ and always check the license of the papers retrieved by OpenAlex for any restrictions.

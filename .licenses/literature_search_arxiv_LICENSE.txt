@@ -1,0 +1,8 @@
+Notice: arXiv Terms of Use
+Timestamp: 2026-09-08T01:42:00+06:00
+
+Please review the arXiv API terms of use at:
+https://info.arxiv.org/help/api/index.html
+
+Always check the license of individual papers retrieved from arXiv for any reuse restrictions.
+Respect arXiv rate limits (maximum 1 request every 3 seconds).

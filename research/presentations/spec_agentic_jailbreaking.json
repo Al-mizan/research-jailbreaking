@@ -1,0 +1,473 @@
+{
+  "meta": {
+    "title": "Agentic Jailbreaking & LLM Agent Security",
+    "footer": "Agentic Jailbreaking & LLM Agent Security · Academic Literature Review"
+  },
+  "slides": [
+    {
+      "type": "title",
+      "kicker": "Academic Literature Review & Research Strategy",
+      "title": "Agentic Jailbreaking & LLM Agent Security",
+      "subtitle": "A Systematic Analysis of Threat Models, Empirical Vulnerabilities, and Provable Defenses (2024–2026)",
+      "footer": "Prepared for Academic Research Seminar & Thesis Topic Direction · September 2026"
+    },
+    {
+      "type": "two_column",
+      "kicker": "Executive Summary",
+      "title": "The Fundamental Shift: Chatbot Jailbreaks vs Agentic Exploits",
+      "left_title": "Conversational LLM Jailbreaks",
+      "left_bullets": [
+        "Confined Impact: Blast radius is limited to toxic text generation (hate speech, disinformation).",
+        "Single-Turn Human Loop: Attacker directly converses with model; human must manually execute harmful advice.",
+        "Static Context Boundary: Model only consumes prompts and internal weights without observing external state.",
+        "Mitigated by Alignment: Post-training safety tuning (RLHF/DPO) suppresses prohibited text tokens reliably."
+      ],
+      "right_title": "Autonomous Agentic Exploits",
+      "right_bullets": [
+        "Irreversible Side Effects: Failure mode is tool execution: database drops, fund transfers, unauthorized API calls.",
+        "Indirect Attack Surface: Adversarial instructions hide in external environments (web DOM, emails, group chats).",
+        "Unified Data/Control Channel: Transformers cannot distinguish developer instructions from untrusted data.",
+        "Compounding Multi-Step Loops: Injected payloads hijack autonomous workflows, pivoting across tools and agents."
+      ]
+    },
+    {
+      "type": "card_grid",
+      "kicker": "Threat Taxonomy",
+      "title": "Core Threat Vectors in Autonomous Agent Architectures",
+      "cards": [
+        {
+          "kicker": "Direct",
+          "title": "Direct Injection (DPI)",
+          "bullets": [
+            "Deceptive user prompts to override system guardrails",
+            "Forces parameter tampering & tool abuse",
+            "Peak ASR: 72.7% across models (ASB)",
+            "Easily bypasses naive persona constraints"
+          ]
+        },
+        {
+          "kicker": "Indirect",
+          "title": "Indirect Injection (IPI)",
+          "bullets": [
+            "Payloads embedded in external tool inputs",
+            "Exploits web pages, emails, and group chats",
+            "Universal 100% ASR in chat apps (LivePI)",
+            "Enables silent multi-step data exfiltration"
+          ]
+        },
+        {
+          "kicker": "Stateful",
+          "title": "Memory & RAG Poisoning",
+          "bullets": [
+            "Corrupts retrieval memory or plan stores",
+            "Infects clean tasks across future sessions",
+            "Peak ASR: 84.3% with Plan-of-Thought (ASB)",
+            "Latent triggers survive session resets"
+          ]
+        },
+        {
+          "kicker": "System",
+          "title": "Confused Deputy & Skills",
+          "bullets": [
+            "Untrusted agents manipulate privileged deputies",
+            "Third-party skills violate safety contracts",
+            "Single-call monitors miss ~50% (VIGIL)",
+            "Breaks multi-agent tenant isolation"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "card_grid",
+      "kicker": "Literature Timeline",
+      "title": "The Three-Year Evolution of Agent Security Research",
+      "cards": [
+        {
+          "kicker": "2024: Phase 1",
+          "title": "Foundations & Emulation",
+          "bullets": [
+            "ToolEmu (ICLR '24): Pioneers LM-emulated sandboxes; shows 24% failure residual under safety prompts.",
+            "InjecAgent (ACL '24): First formal benchmark for IPI; function-calling fine-tuning cuts ASR to 3.8%.",
+            "AgentDojo (NeurIPS '24): Dynamic testbeds prove ML detectors drop benign utility from 69% to 41%."
+          ]
+        },
+        {
+          "kicker": "2025: Phase 2",
+          "title": "Lifecycle & Live Web",
+          "bullets": [
+            "ASB (ICLR '25): Formalizes 4 lifecycle stages; introduces Plan-of-Thought backdoors (84.3% ASR).",
+            "WASP (Meta FAIR '25): Evaluates live web platforms; exposes 86% intermediate hijack vs 16% completion.",
+            "Shift from synthetic toys to realistic multi-turn environments and web applications."
+          ]
+        },
+        {
+          "kicker": "2026: Phase 3",
+          "title": "OS Workflows & Verification",
+          "bullets": [
+            "SEAgent (arXiv '26): Mandatory Access Control (MAC) eliminates Confused Deputy, reaching 0.0% ASR.",
+            "LivePI (arXiv '26): Real Linux VM shows universal 100% group chat vulnerability via role spoofing.",
+            "VIGIL (arXiv '26): Trace-grounded SMT checking achieves 92.6% F1 on real-world skill contracts."
+          ]
+        }
+      ]
+    },
+    {
+      "type": "two_column",
+      "kicker": "Paper Deep-Dive 1 · ICLR 2024",
+      "title": "ToolEmu: Identifying High-Stakes Risks in Emulated Sandboxes",
+      "left_title": "Core Problem & Emulation Framework",
+      "left_bullets": [
+        "Authors: Yangjun Ruan, Jimmy Ba, Tatsunori Hashimoto et al. (Toronto, Stanford).",
+        "The Problem: Evaluating long-tail risks (medical, financial, OS) is unsustainable via custom sandboxes.",
+        "LM Emulator: Uses GPT-4 to simulate tool execution, returns, and world state updates dynamically.",
+        "Dataset Scale: 36 high-stakes toolkits across 18 domains with 144 curated risk scenarios.",
+        "Evaluator Quality: Automated evaluator achieved 75.3% precision and 73.1% recall matching human experts."
+      ],
+      "right_title": "Empirical Findings & Prompt Defense Limits",
+      "right_bullets": [
+        "High Baseline Failure: Standard GPT-4 failed 39.4% of cases; Claude-2: 44.3%; ChatGPT-3.5: 62.0%.",
+        "Limits of Safety Prompts: Explicit system prompts lowered GPT-4 failures from 39.4% to 23.9%.",
+        "Key Takeaway: Even with safety alignment, agents cause critical failures in nearly 1 in 4 tool tasks.",
+        "Open Gaps: Benchmark curation required manual effort; LM emulator can hallucinate complex tool state."
+      ]
+    },
+    {
+      "type": "two_column",
+      "kicker": "Paper Deep-Dive 2 · ACL 2024",
+      "title": "InjecAgent: Benchmarking Indirect Prompt Injections in Tools",
+      "left_title": "Threat Modeling & Benchmark Setup",
+      "left_bullets": [
+        "Authors: Joey Tianyi Zhou, Luu Anh Tuan et al. (A*STAR, NTU Singapore).",
+        "Threat Taxonomy: Formalizes Direct Harm (file deletion, unauthorized actions) vs Data Stealing (exfiltration).",
+        "Benchmark Scale: 1,054 test cases covering 17 user tools and 62 attacker tools.",
+        "Settings: Base setting (raw attacker text) vs Enhanced setting (+ hacking prompt wrapper).",
+        "Scope: Evaluated 30 agents across prompted ReAct and fine-tuned function-calling backbones."
+      ],
+      "right_title": "Function Calling Divide & Exfiltration Leak",
+      "right_bullets": [
+        "Prompted Models Collapse: LLaMA-2-70B exhibited >80% ASR; prompted GPT-4 reached 24%–47% ASR.",
+        "Fine-Tuning Advantage: Native function-calling fine-tuning slashed GPT-4 ASR down to 3.8%.",
+        "The Exfiltration Trap: Once sensitive data is read into context, exfiltration transmission reaches 100%.",
+        "Key Takeaway: Function fine-tuning improves tool hygiene, but prompt defenses cannot stop data egress."
+      ]
+    },
+    {
+      "type": "two_column",
+      "kicker": "Paper Deep-Dive 3 · NeurIPS 2024",
+      "title": "AgentDojo: Evaluating Dynamic Attacks and Defense Costs",
+      "left_title": "Dynamic Testbed Architecture",
+      "left_bullets": [
+        "Authors: Edoardo Debenedetti, Florian Tramèr et al. (ETH Zurich, Invariant Labs).",
+        "Core Innovation: Moves beyond static tests into dynamic, executable multi-turn environments.",
+        "Application Suites: 97 tasks across Workspace, Banking, Slack, and Travel domains.",
+        "Evaluation Suite: 629 security test cases featuring realistic untrusted tool outputs.",
+        "Targeted Models: 10 models including GPT-4o, Claude 3.5 Sonnet, Gemini 1.5, and Llama 3 70B."
+      ],
+      "right_title": "Empirical Findings & The Utility Dilemma",
+      "right_bullets": [
+        "Frontier Susceptibility: Targeted ASR hit 47.7% on GPT-4o and 33.9% on Claude 3.5 Sonnet.",
+        "Untargeted Hijacks: Attackers successfully derailed agents from their goals in 68.4% of runs.",
+        "The Classifier Trap: ML detectors lowered ASR to 7.95%, but crashed benign utility from 69% to 41.5%.",
+        "Tool Isolation Superiority: Least-privilege tool filtering cut ASR to 6.8% while maintaining 73.1% utility."
+      ]
+    },
+    {
+      "type": "card_grid",
+      "kicker": "Paper Deep-Dive 4 · ICLR 2025",
+      "title": "Agent Security Bench (ASB): Full Lifecycle Threat Modeling",
+      "cards": [
+        {
+          "kicker": "Taxonomy",
+          "title": "4-Stage Attack Lifecycle",
+          "bullets": [
+            "Formalizes attacks across System Prompt, User Prompt, Tool Use, and Memory Retrieval",
+            "10 application domains (Finance, Driving, Healthcare, E-commerce)",
+            "Evaluates 27 attack and defense methods across 13 foundation backbones",
+            "First unified framework spanning agent execution lifecycle"
+          ]
+        },
+        {
+          "kicker": "Vulnerabilities",
+          "title": "Peak Empirical ASR",
+          "bullets": [
+            "Plan-of-Thought (PoT) Backdoors reached 84.3% peak average ASR across models",
+            "Direct Prompt Injection (DPI) achieved 72.7% average success rate",
+            "GPT-4o exhibited 64.4% average vulnerability across all evaluated scenarios",
+            "Claude 3.5 Sonnet suffered 56.4% average compromise"
+          ]
+        },
+        {
+          "kicker": "Defense Gaps",
+          "title": "The Heuristic Deficit",
+          "bullets": [
+            "Capability Disconnect: Standalone leaderboard IQ does not correlate with security",
+            "Paraphrasing defense leaves 56.9% ASR unmitigated",
+            "Dynamic prompt rewriting leaves 44.5% ASR open",
+            "Takeaway: Shallow prompt transformations fail against stateful agent backdoors"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "chart",
+      "kicker": "Paper Deep-Dive 5 · Meta FAIR 2025",
+      "title": "WASP: Live Web Agents & The \"Security by Incompetence\" Paradox",
+      "chart_type": "bar",
+      "categories": ["OpenAI o1", "Claude Sonnet 3.5", "GPT-4o", "GPT-4o-mini"],
+      "series": [
+        {
+          "name": "Intermediate Hijack ASR (%)",
+          "values": [85.7, 58.3, 42.9, 38.1]
+        },
+        {
+          "name": "End-to-End Exploitation ASR (%)",
+          "values": [16.7, 6.0, 3.6, 0.0]
+        }
+      ],
+      "footer": "WASP (Meta FAIR 2025): Evaluated on self-hosted GitLab and Reddit with live multi-step web navigation."
+    },
+    {
+      "type": "two_column",
+      "kicker": "Paper Deep-Dive 6 · arXiv 2026",
+      "title": "SEAgent: Mandatory Access Control (MAC) for AI Agents",
+      "left_title": "Architecture & Security Model",
+      "left_bullets": [
+        "Authors: S. Lin, Y. Zhang, H. Sun et al. (arXiv 2026).",
+        "OS-Inspired Security: Implements SELinux-style Mandatory Access Control for multi-agent systems.",
+        "System View Graph: Dynamically tracks execution topology, data dependencies, and principals.",
+        "SEMemory Isolation: Segregates untrusted external inputs from sensitive execution context.",
+        "Hybrid Labeling: Combines automated LLM policy labeling with deterministic rule validation."
+      ],
+      "right_title": "Empirical Guarantees & Utility Preservation",
+      "right_bullets": [
+        "Zero Attack Success Rate: Achieved 0.00% ASR across InjecAgent and AgentDojo benchmarks.",
+        "Eliminated Confused Deputy: Prevented untrusted subagents from invoking privileged tools.",
+        "Preserved Benign Utility: Maintained 68%–75% correctness on API-Bank with 0%–5% false alarms.",
+        "Outperformed IsolateGPT: Avoided IsolateGPT's severe 34% utility crash and 18.3% false positive rate."
+      ]
+    },
+    {
+      "type": "two_column",
+      "kicker": "Paper Deep-Dive 7 · arXiv 2026",
+      "title": "LivePI: Realistic IPI Benchmarking on Live Linux Workflows",
+      "left_title": "Production VM Environment",
+      "left_bullets": [
+        "Authors: Lei Zhao, Abhay Bhaskar, Edgar Dobriban (University of Pennsylvania).",
+        "Production VM Testbed: Live Linux VM (OpenClaw) with real email, chat, files, and crypto wallet.",
+        "7 Ingestion Surfaces: Group Chat (Slack, WhatsApp), Email, Local Docs, Repos, Gist, Web.",
+        "5 Malicious Goals: Credential theft, policy tampering, arbitrary code exec, wallet drain.",
+        "Frontier Backbones: Evaluated GPT-5.3-Codex, Claude Opus 4.6, Gemini 3.1 Pro, GLM-5."
+      ],
+      "right_title": "The 'Role: User' Context Flaw & Defense",
+      "right_bullets": [
+        "Universal Group Exploit: Group chat injections hit 100.0% ASR across ALL five frontier models.",
+        "Architectural Flaw: Chat platforms inject member messages as 'role: user', tricking model reasoning.",
+        "Surface Disparity: Repository links achieved 50%–100% compromise; Gist was largely ineffective.",
+        "Two-Layer Defense: Pre-execution tool-call authorization reduced GPT-5.3-Codex ASR to 0.0%."
+      ]
+    },
+    {
+      "type": "two_column",
+      "kicker": "Paper Deep-Dive 8 · arXiv 2026",
+      "title": "VIGIL: Runtime Enforcement of Behavioral Specs in Skills",
+      "left_title": "Trace-Grounded SMT Verification",
+      "left_bullets": [
+        "Authors: Ying Li, Yanju Chen, Yu Feng, Yuan Tian et al. (UCLA, UCSD, UCSB, Riema).",
+        "The Gap: Natural-language skill contracts cannot be enforced by isolated single-call filters.",
+        "SMT Formalization: Compiles behavioral specs into formal SMT constraints over finite execution traces.",
+        "Cross-Call Tracking: Evaluates temporal preconditions, parameter bounds, and cross-tool flows.",
+        "Benchmark: Evaluated on SB+SI (152 labeled executions: 72 violating, 80 benign)."
+      ],
+      "right_title": "Empirical Superiority & Industry Audit",
+      "right_bullets": [
+        "Exceptional Accuracy: Achieved 95.8% recall, 89.6% precision, and 92.6% F1 score.",
+        "Single-Call Guards Failed: AgentSpec (57.6% F1) and Progent (50.3% F1) missed ~50% of attacks.",
+        "LLM Judges Inadequate: Claude Opus 4.6 judge achieved only 76.8% F1, missing 24 temporal bugs.",
+        "Real-World Impact: Uncovered 34 confirmed policy bugs in deployed skills (NVIDIA, Cloudflare)."
+      ]
+    },
+    {
+      "type": "table",
+      "kicker": "Synthesis Matrix",
+      "title": "Master Benchmark & Architectural Comparison Matrix",
+      "headers": ["Benchmark", "Venue", "Threat Vectors", "Environment", "Peak ASR", "Optimal Defense"],
+      "rows": [
+        ["ToolEmu", "ICLR '24", "High-Stakes Tool Misuse", "LM Emulated Sandbox", "62.0% (ChatGPT)", "Safety System Prompts"],
+        ["InjecAgent", "ACL '24", "IPI (Harm & Exfil)", "Synthetic API Mocks", "80%+ (LLaMA-2)", "Function-Calling Tuning"],
+        ["AgentDojo", "NeurIPS '24", "DPI & IPI in Tools", "Dynamic Python Env", "47.7% (GPT-4o)", "Tool Filtering / Isolation"],
+        ["ASB", "ICLR '25", "DPI, IPI, Memory, PoT", "10 Simulated Domains", "84.3% (Backdoor)", "Lifecycle Formalization"],
+        ["WASP", "FAIR '25", "Web Prompt Injections", "Self-Hosted Live Web", "85.7% (Interm. o1)", "Instruction Hierarchy"],
+        ["SEAgent", "arXiv '26", "Privilege Escalation", "InjecAgent, AgentDojo", "39.1% -> 0.0%", "Mandatory Access Control"],
+        ["LivePI", "arXiv '26", "IPI in OS Workflows", "Live Linux VM (OpenClaw)", "100% (Group Chat)", "2-Layer Tool Authorization"],
+        ["VIGIL", "arXiv '26", "Skill Contract Breaks", "SB+SI, Deployed Skills", "95.8% Rec. Violat.", "Trace-Grounded SMT"]
+      ]
+    },
+    {
+      "type": "card_grid",
+      "kicker": "Cross-Model Analysis",
+      "title": "The Capability-Security Disconnect Across Model Generations",
+      "cards": [
+        {
+          "kicker": "Paradox",
+          "title": "The Reasoning Paradox",
+          "bullets": [
+            "Frontier models (o1, GPT-4o, Claude 3.5) exhibit equal or higher attack compliance",
+            "Superior instruction-following causes models to strictly obey injected instructions",
+            "ASB proved model leaderboard IQ does not correlate with adversarial robustness",
+            "OpenAI o1 reached 85.7% intermediate hijack rate in WASP"
+          ]
+        },
+        {
+          "kicker": "Illusion",
+          "title": "Security by Incompetence",
+          "bullets": [
+            "Low end-to-end completion (0%–16%) stems from agents getting lost in complex UIs",
+            "Current safety is an accidental byproduct of agent navigation incompetence",
+            "Models fail at modal popups, multi-step navigation, and state validation",
+            "As frontier agents master autonomous execution, this accidental barrier will vanish"
+          ]
+        },
+        {
+          "kicker": "Architecture",
+          "title": "Context Channel Failures",
+          "bullets": [
+            "Messaging platforms ingest untrusted member chat as 'role: user'",
+            "Triggers 100% universal exploitability across all major foundation models",
+            "Fine-tuning cuts function injection to 3.8%, but exfiltration still hits 100%",
+            "Transformers lack hardware-level separation between data and instructions"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "card_grid",
+      "kicker": "Defense Evolution",
+      "title": "The Three Waves of LLM Agent Defenses (2023–2026+)",
+      "cards": [
+        {
+          "kicker": "Wave 1: 2023–2024",
+          "title": "Prompt Heuristics",
+          "bullets": [
+            "Mechanisms: System safety prompts, XML tags, repeat prompting, paraphrasing",
+            "Pros: Zero architectural changes required; trivial to deploy",
+            "Flaws: Easily bypassed; ASB showed Paraphrasing leaves 56.9% ASR",
+            "Penalty: Degrades benign instruction-following precision",
+            "Verdict: Inadequate for production agent deployments"
+          ]
+        },
+        {
+          "kicker": "Wave 2: 2024–2025",
+          "title": "Auxiliary Classifiers",
+          "bullets": [
+            "Mechanisms: External PI detectors (Llama-Guard), Dual-LLM intent planners",
+            "Pros: Lowers ASR for known injection signatures (AgentDojo dropped ASR to 7.9%)",
+            "Flaws: Vulnerable to adversarial cascading injections against the guard LLM",
+            "Penalty: Severe false positives crash benign utility from 69% to 41.5%",
+            "Verdict: Unacceptable friction in real-world workflows"
+          ]
+        },
+        {
+          "kicker": "Wave 3: 2026+",
+          "title": "Deterministic SMT & MAC",
+          "bullets": [
+            "Mechanisms: Mandatory Access Control (SEAgent), SMT trace checkers (VIGIL)",
+            "Pros: 0.0% ASR; eliminates multi-agent Confused Deputy; 92.6% F1 on skills",
+            "Formal Guarantees: Verifies temporal ordering & information-flow invariants",
+            "Preserves Utility: Minimal false positive friction (0.11% block rate)",
+            "Verdict: The definitive future of secure agent systems"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "card_grid",
+      "kicker": "Research Agenda",
+      "title": "Four High-Impact Research Directions for Our Lab",
+      "cards": [
+        {
+          "kicker": "Direction 1",
+          "title": "Multi-Turn Red Teaming",
+          "bullets": [
+            "Autonomous red-teaming agents generating adaptive multi-turn injections",
+            "Navigates environments to evade modern MAC & SMT defense policies",
+            "High Novelty / Exploits stateful multi-step gaps",
+            "Target: IEEE S&P / USENIX Security"
+          ]
+        },
+        {
+          "kicker": "Direction 2",
+          "title": "SMT Policy Synthesis",
+          "bullets": [
+            "Automated compilation of natural-language skill specs into sound SMT trace policies",
+            "Eliminates reliance on manual policy drafting in SEAgent and VIGIL",
+            "Formal Methods & AI Convergence",
+            "Target: CAV / PLDI / ICLR"
+          ]
+        },
+        {
+          "kicker": "Direction 3",
+          "title": "Multimodal Injections",
+          "bullets": [
+            "Adversarial visual injections targeting GUI navigation & computer-use agents",
+            "Screen-space typographic attacks, visual steganography, adversarial UI elements",
+            "Frontier & Fast-Moving Area",
+            "Target: NeurIPS / CVPR / ICML"
+          ]
+        },
+        {
+          "kicker": "Direction 4",
+          "title": "MCP Non-Interference",
+          "bullets": [
+            "Provable non-interference & dynamic taint tracking for Model Context Protocol (MCP)",
+            "Integrates taint tracking into tool servers to stop exfiltration mathematically",
+            "Immediate Industry Utility",
+            "Target: IEEE S&P / NDSS"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "card_grid",
+      "kicker": "Strategic Takeaways",
+      "title": "Strategic Conclusion & Supervisor Action Items",
+      "cards": [
+        {
+          "kicker": "Takeaway 1",
+          "title": "Distinct Threat Surface",
+          "bullets": [
+            "Agentic exploits cause irreversible physical and digital side effects via APIs",
+            "Safety alignment (RLHF) alone cannot prevent tool misuse",
+            "Context channel ingestion flaws demand architectural fixes"
+          ]
+        },
+        {
+          "kicker": "Takeaway 2",
+          "title": "The Capability Paradox",
+          "bullets": [
+            "Frontier reasoning models (o1, Claude 3.5) exhibit equal or higher attack compliance",
+            "Accidental 'Security by Incompetence' will vanish as navigation matures",
+            "Leaderboard scores do not predict safety"
+          ]
+        },
+        {
+          "kicker": "Takeaway 3",
+          "title": "Deterministic Systems",
+          "bullets": [
+            "Prompt filters and ML classifiers fail or cause catastrophic utility drops",
+            "State-of-the-art has shifted decisively to Mandatory Access Control & SMT trace checking",
+            "Formal guarantees are required for production"
+          ]
+        },
+        {
+          "kicker": "Action Plan",
+          "title": "Immediate Next Steps",
+          "bullets": [
+            "Recommend selecting (A) Automated Multi-Turn Red Teaming or (B) MCP Taint Tracking",
+            "Establish formal verification testbed and draft conference proposal",
+            "Schedule follow-up research direction review"
+          ]
+        }
+      ]
+    }
+  ]
+}
