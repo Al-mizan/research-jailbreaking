@@ -1,0 +1,9 @@
+[submodule "repos/BIPIA"]
+	path = repos/BIPIA
+	url = https://github.com/microsoft/BIPIA.git
+[submodule "repos/MalSkillBench"]
+	path = repos/MalSkillBench
+	url = https://github.com/lxyeternal/MalSkillBench.git
+[submodule "repos/skill-inject"]
+	path = repos/skill-inject
+	url = https://github.com/aisa-group/skill-inject.git
